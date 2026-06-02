@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Road to Remote — Daily Curriculum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0f0e;--panel:#161918;--panel-2:#1d211f;--line:#2a302d;
+  --ink:#e9e7df;--ink-dim:#8c948e;--ink-faint:#5b635d;
+  --amber:#e8b04b;--amber-deep:#b9842b;--green:#6fcf8e;--cyan:#5bc8d6;--danger:#d9694f;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--display:'Fraunces',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:radial-gradient(900px 500px at 85% -10%,rgba(232,176,75,.10),transparent 60%),radial-gradient(700px 600px at -5% 110%,rgba(91,200,214,.06),transparent 55%),var(--bg);
+  color:var(--ink);font-family:var(--mono);line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:880px;margin:0 auto;padding:clamp(16px,4vw,40px) clamp(14px,4vw,40px) 80px}
+a{color:var(--cyan);text-decoration:none;border-bottom:1px dotted rgba(91,200,214,.4)}
+a:hover{color:var(--amber);border-color:var(--amber)}
+
+/* header */
+.eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+h1{font-family:var(--display);font-weight:900;font-size:clamp(30px,6vw,52px);line-height:.95;letter-spacing:-.02em}
+h1 em{font-style:italic;color:var(--amber)}
+.sub{color:var(--ink-dim);font-size:13px;margin-top:10px;max-width:64ch}
+
+/* sticky dashboard */
+.hud{position:sticky;top:0;z-index:20;margin:22px -8px 8px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;
+  background:rgba(22,25,24,.86);backdrop-filter:blur(10px);display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.hud .blk{display:flex;flex-direction:column;gap:3px}
+.hud .lab{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+.hud .big{font-family:var(--display);font-weight:900;font-size:24px;line-height:1}
+.hud .big.amber{color:var(--amber)}
+.hud .bar{flex:1;min-width:120px;height:8px;background:#0b0d0c;border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.hud .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--amber-deep),var(--amber));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.hud button{border:1px solid var(--amber-deep);background:rgba(232,176,75,.08);color:var(--amber);font-family:var(--mono);
+  font-size:11px;font-weight:700;letter-spacing:.06em;padding:9px 12px;border-radius:9px;cursor:pointer;transition:.16s}
+.hud button:hover{background:var(--amber);color:#1a1404}
+.startwrap{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--ink-dim)}
+.startwrap input{background:#0b0d0c;border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:11px;padding:6px 8px;border-radius:7px}
+
+/* phase nav */
+.phasenav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 10px}
+.chip{border:1px solid var(--line);background:var(--panel);color:var(--ink-dim);font-family:var(--mono);font-size:11px;
+  padding:7px 12px;border-radius:99px;cursor:pointer;transition:.15s}
+.chip:hover{border-color:var(--amber-deep);color:var(--amber)}
+
+/* phase + week */
+.phase{margin-top:30px}
+.phase-title{font-family:var(--display);font-weight:900;font-size:22px;letter-spacing:-.01em;display:flex;align-items:baseline;gap:10px}
+.phase-title .pn{color:var(--ink-faint)}
+.phase-goal{font-size:12px;color:var(--ink-dim);margin:6px 0 4px;font-style:italic}
+
+.week{border:1px solid var(--line);border-radius:14px;margin-top:14px;overflow:hidden;background:var(--panel)}
+.week-head{display:flex;align-items:center;gap:13px;padding:15px 18px;cursor:pointer;user-select:none;transition:background .2s}
+.week-head:hover{background:var(--panel-2)}
+.week-name{flex:1}
+.week-name b{font-family:var(--display);font-weight:600;font-size:16px}
+.week-name .wk{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-top:2px}
+.week-prog{font-size:11px;color:var(--ink-dim);white-space:nowrap}
+.ring{--p:0;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--amber) calc(var(--p)*1%),#0b0d0c 0)}
+.ring::after{content:'';width:23px;height:23px;border-radius:50%;background:var(--panel)}
+.ring.done{background:conic-gradient(var(--green) 100%,#0b0d0c 0)}
+.chev{color:var(--ink-faint);transition:transform .3s;font-size:12px}
+.week.open .chev{transform:rotate(90deg)}
+.week-body{display:none;padding:4px 14px 14px}
+.week.open .week-body{display:block}
+.week-why{font-size:12px;color:var(--ink-dim);font-style:italic;padding:6px 6px 12px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.rest{font-size:11px;color:var(--ink-faint);text-align:center;padding:10px;letter-spacing:.1em}
+
+/* day card */
+.day{display:flex;gap:12px;padding:13px 10px;border-radius:11px;transition:background .15s;align-items:flex-start}
+.day+.day{border-top:1px solid var(--line)}
+.day:hover{background:var(--panel-2)}
+.day.light{background:rgba(91,200,214,.03)}
+.day.today{box-shadow:inset 3px 0 0 var(--amber);background:rgba(232,176,75,.05)}
+.box{flex-shrink:0;width:22px;height:22px;border:1.5px solid var(--ink-faint);border-radius:7px;margin-top:2px;display:grid;place-items:center;cursor:pointer;transition:.18s}
+.box svg{width:13px;height:13px;stroke:#1a1404;stroke-width:3.4;fill:none;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .25s .05s}
+.day.done .box{background:var(--green);border-color:var(--green)}
+.day.done .box svg{stroke-dashoffset:0}
+.body{flex:1;min-width:0}
+.dhead{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.dnum{font-family:var(--display);font-weight:900;font-size:13px;color:var(--amber);background:rgba(232,176,75,.1);border:1px solid var(--amber-deep);border-radius:6px;padding:1px 7px}
+.dtitle{font-family:var(--display);font-weight:600;font-size:15.5px}
+.day.done .dtitle{color:var(--ink-faint);text-decoration:line-through}
+.tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+.tag.light{color:var(--cyan)}
+.facets{margin-top:8px;display:grid;gap:5px}
+.facet{font-size:12.5px;display:flex;gap:8px;align-items:baseline}
+.facet .k{flex-shrink:0;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);width:54px;padding-top:1px}
+.facet .v{color:var(--ink-dim)}
+.facet.gh .v{color:var(--ink);font-size:11.5px;background:#0b0d0c;border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+.facet.why .v{color:var(--ink)}
+code,.cd{background:#0b0d0c;border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:11px;color:var(--amber)}
+
+footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.save{font-size:11px;color:var(--ink-faint)}.save b{color:var(--green)}
+.reset{background:none;border:1px solid var(--line);color:var(--ink-faint);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:8px 13px;border-radius:8px;cursor:pointer;transition:.16s}
+.reset:hover{border-color:var(--danger);color:var(--danger)}
+.note{font-size:11px;color:var(--ink-faint);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Shahadat · 26-week sprint · GMT+6</div>
+  <h1>Daily <em>Curriculum</em></h1>
+  <p class="sub">Open it each morning. Do the blocks in order, tick the day, make the commit. The dates will slip — the sequence won't. Never break the commit streak.</p>
+
+  <div class="hud">
+    <div class="blk"><span class="lab">Completed</span><span class="big amber" id="doneN">0</span></div>
+    <div class="blk" style="flex:1"><span class="lab" id="pctLab">0% of 178 days</span><div class="bar"><i id="bar"></i></div></div>
+    <div class="startwrap">started <input type="date" id="start"></div>
+    <button id="jump">↓ Today</button>
+  </div>
+
+  <div class="phasenav" id="phasenav"></div>
+  <div id="content"></div>
+
+  <footer>
+    <div class="save" id="save">Loading…</div>
+    <button class="reset" id="reset">Reset progress</button>
+  </footer>
+  <p class="note">Saves automatically in this view. If you download this file and open it in your own browser, it saves locally there instead — pick one home and stick with it. Resource links open in a new tab.</p>
+</div>
+
+<script>
+/* ---------- resource links ---------- */
+const R={JSinfo:"https://javascript.info",YDKJS:"https://github.com/getify/You-Dont-Know-JS",TSHB:"https://www.typescriptlang.org/docs/handbook/intro.html",TotalTS:"https://www.totaltypescript.com/tutorials",ReactDev:"https://react.dev/learn",Comeau:"https://www.joshwcomeau.com",NextLearn:"https://nextjs.org/learn",NextDocs:"https://nextjs.org/docs",NeetCode:"https://neetcode.io/practice",NCyt:"https://www.youtube.com/@NeetCode",Grind75:"https://www.techinterviewhandbook.org/grind75",TIH:"https://www.techinterviewhandbook.org",Hello:"https://www.hellointerview.com/learn/system-design",SDP:"https://github.com/donnemartin/system-design-primer",BBG:"https://www.youtube.com/@ByteByteGo",Pramp:"https://www.pramp.com",Exponent:"https://www.tryexponent.com/practice",intio:"https://interviewing.io",Fireship:"https://www.youtube.com/@Fireship",Overleaf:"https://www.overleaf.com",RW:"https://resumeworded.com",Turing:"https://www.turing.com",Arc:"https://arc.dev",Wellfound:"https://wellfound.com",Lemon:"https://lemon.io",YC:"https://www.workatastartup.com"};
+function lk(s){if(!s)return"";return s.replace(/\[([A-Za-z0-9]+)\]/g,(m,t)=>R[t]?`<a href="${R[t]}" target="_blank" rel="noopener">${t}</a>`:m).replace(/`([^`]+)`/g,'<span class="cd">$1</span>');}
+
+/* ---------- curriculum data ----------
+   day fields: n title why learn dsa eng gh  (+ light:1) ; rest cards: {rest:"..."} */
+const DATA=[
+{p:"Phase 1 · Weeks 1–6 — Own Your Code + Fundamentals",goal:"Be able to whiteboard AtomicTest and defend every decision. Learn fundamentals by re-understanding your own code.",weeks:[
+ {name:"JavaScript execution model",wk:"Week 1",why:"Closures, scope and the event loop are what your TikZ-service queue is built on.",days:[
+  {n:1,title:"Variables, scope & hoisting",why:"Hoisting is exactly what caused your handleSubmit bug — understand the mechanism, not the symptom.",learn:"[JSinfo] Variables, Code structure, Functions",dsa:"Set up [NeetCode] · read the roadmap intro",eng:"Record a 60-sec clip: what I'm studying this week and why",gh:"create road-to-remote · README + LOG day-1 + notes/js-scope.md"},
+  {n:2,title:"Closures (deep)",why:"Your queue's waiting[] array captures resolve functions in closures — this IS that concept.",learn:"[JSinfo] Closures · [YDKJS] Scope & Closures ch.1–3",dsa:"Contains Duplicate (hashing)",eng:"Explain a closure aloud, 90 sec, recorded",gh:"notes/js-closures.md + dsa/arrays-hashing/contains-duplicate.js"},
+  {n:3,title:"`this`, call/apply/bind, arrow vs normal fns",why:"Understanding `this` prevents a whole class of React bugs.",learn:"[JSinfo] Object methods this, Function binding · [Comeau] arrow fns",dsa:"Valid Anagram (hashing)",eng:"Shadow one [Fireship] 100-seconds video, repeat each line",gh:"notes/js-this.md + dsa/arrays-hashing/valid-anagram.js"},
+  {n:4,title:"The event loop, call stack, micro/macrotasks",why:"The single most-asked JS interview topic; explains your app's async behaviour.",learn:"[JSinfo] Event loop · 'What the heck is the event loop' (Philip Roberts, YT)",dsa:"Two Sum (hashing)",eng:"Explain the event loop aloud using a kitchen/orders analogy",gh:"notes/js-event-loop.md + dsa/arrays-hashing/two-sum.js"},
+  {n:5,title:"Promises (deep)",why:"Your acquireSlot() returns a Promise that resolves when a slot frees — trace that flow.",learn:"[JSinfo] Promises, async/await (Promise, chaining, errors)",dsa:"Group Anagrams (hashing)",eng:"Explain how a Promise resolves, aloud, recorded",gh:"notes/js-promises.md + dsa/arrays-hashing/group-anagrams.js"},
+  {n:6,light:1,title:"async/await + week review",why:"async/await is how your queue code reads — finish the mental model.",learn:"[JSinfo] Async/await, Error handling with promises",dsa:"Review the week's 4 problems from memory",eng:"Re-record your 'closure' explanation; compare to Day 2",gh:"notes/js-async.md + notes/week-01-review.md (learned/stuck/next)"},
+  {rest:"Day 7 — rest"}
+ ]},
+ {name:"JavaScript II + TypeScript I",wk:"Week 2",why:"Prototypes/modules explain how your codebase is wired; TS is the language you actually write AtomicTest in.",days:[
+  {n:8,title:"Prototypes, classes, inheritance",why:"Understand what class compiles to; clarifies React's class-vs-function history.",learn:"[JSinfo] Prototypes inheritance, Classes",dsa:"Top K Frequent Elements (bucket)",eng:"Shadow a [Fireship] video, 10 min",gh:"notes/js-prototypes.md + dsa/arrays-hashing/top-k-frequent.js"},
+  {n:9,title:"Array/object methods & immutability",why:"Your filter logic and data transforms live and die by map/filter/reduce.",learn:"[JSinfo] Array methods, Object.keys/values/entries",dsa:"Product of Array Except Self (prefix/suffix)",eng:"Explain reduce aloud with one example",gh:"notes/js-array-methods.md + dsa/arrays-hashing/product-except-self.js"},
+  {n:10,title:"Modules (ESM vs CommonJS)",why:"You use import (app) and require (tikz-service) — know why and when.",learn:"[JSinfo] Modules",dsa:"Valid Sudoku (hashing/matrix)",eng:"2-min recorded summary of 'modules in JS'",gh:"notes/js-modules.md + dsa/arrays-hashing/valid-sudoku.js"},
+  {n:11,title:"TS basics: types, interfaces, type vs interface",why:"Your 48-field problem schema is a TS type — read and shape it confidently.",learn:"[TSHB] Everyday Types, Object Types · [TotalTS] beginner",dsa:"Encode and Decode Strings (design)",eng:"Shadow 10 min; narrate your DSA solution aloud",gh:"notes/ts-basics.md + dsa/arrays-hashing/encode-decode.js"},
+  {n:12,title:"TypeScript generics",why:"Generics are why a reusable hook like useQuestionFilter can be type-safe.",learn:"[TSHB] Generics · [TotalTS] generics",dsa:"Longest Consecutive Sequence (hashing)",eng:"Explain 'what a generic is' in plain words, recorded",gh:"notes/ts-generics.md + dsa/arrays-hashing/longest-consecutive.js"},
+  {n:13,light:1,title:"Narrowing, unions, discriminated unions + review",why:"Discriminated unions are the clean fix for several of your `as any`s.",learn:"[TSHB] Narrowing, Unions",dsa:"Review week 2 from memory",eng:"Re-record 'generics' explanation; compare",gh:"notes/ts-narrowing.md + notes/week-02-review.md"},
+  {rest:"Day 14 — rest"}
+ ]},
+ {name:"TypeScript II + React I + DSA begins",wk:"Week 3",why:"You start fixing your own `as any`s (a concrete CV story) and enter React with the language under control.",days:[
+  {n:15,title:"Utility types (Partial, Pick, Omit, Record)",why:"These model your schema's optional/derived fields cleanly.",learn:"[TSHB] Utility Types · [TotalTS]",dsa:"Valid Palindrome (two pointers) — new pattern",eng:"Shadow 10 min",gh:"notes/ts-utility-types.md + dsa/two-pointers/valid-palindrome.js"},
+  {n:16,title:"Fix your `as any`, #1–4",why:"Each is a place a shortcut was taken; replacing them properly is real understanding + a story.",learn:"Re-open AtomicTest; find the first 4 `as any` assertions",dsa:"Two Sum II (two pointers)",eng:"Explain why `as any` is a code smell, aloud",gh:"atomic-test: 'fix: replace 4 as-any with proper types' + LOG"},
+  {n:17,title:"Fix your `as any`, #5–9",why:"Finishing means you can truthfully say 'I removed all unsafe casts'.",learn:"Finish the remaining 5 assertions",dsa:"3Sum (two pointers) — expect to struggle; watch [NCyt] after",eng:"Narrate your 3Sum approach aloud",gh:"atomic-test: 'fix: remove remaining as-any; type-safe codebase'"},
+  {n:18,title:"React mental model: rendering & reconciliation",why:"Explains every 'why did this re-render' question and your own perf choices.",learn:"[ReactDev] Describing the UI, Render and Commit · [Comeau] Why React Re-Renders",dsa:"Container With Most Water (two pointers)",eng:"Shadow 10 min",gh:"notes/react-rendering.md + dsa/two-pointers/container-water.js"},
+  {n:19,title:"useState & controlled components",why:"Your ProblemFilterBar is controlled components + state — re-read it after.",learn:"[ReactDev] Adding Interactivity, State: A Component's Memory",dsa:"Best Time to Buy/Sell Stock (sliding window) — new pattern",eng:"Explain controlled vs uncontrolled inputs aloud",gh:"notes/react-state.md + dsa/sliding-window/buy-sell-stock.js"},
+  {n:20,light:1,title:"JSX deep, keys, lists + review",why:"Keys + purity set up tomorrow's understanding of your Date.now() bug.",learn:"[ReactDev] Rendering Lists, Keeping Components Pure",dsa:"Review week 3",eng:"Re-record your '3Sum approach'",gh:"notes/react-lists.md + notes/week-03-review.md"},
+  {rest:"Day 21 — rest"}
+ ]},
+ {name:"React II (the deep parts)",wk:"Week 4",why:"Effects, purity, and custom hooks are where most React interviews and your own bugs live.",days:[
+  {n:22,title:"useEffect, deeply (and when NOT to use it)",why:"Misused effects cause most React bugs; know the boundaries.",learn:"[ReactDev] Synchronizing with Effects, You Might Not Need an Effect",dsa:"Longest Substring Without Repeating Characters (sliding window)",eng:"Shadow 10 min",gh:"notes/react-effects.md + dsa/sliding-window/longest-substring.js"},
+  {n:23,title:"Render purity & your Date.now() bug",why:"Be able to explain exactly why a render-phase side effect is impure and what breaks.",learn:"Re-read [ReactDev] Keeping Components Pure; open the Date.now()-in-render code",dsa:"Longest Repeating Character Replacement (sliding window)",eng:"Explain why calling Date.now() during render is a bug, recorded",gh:"notes/react-purity.md + dsa/sliding-window/char-replacement.js"},
+  {n:24,title:"Custom hooks (your useQuestionFilter)",why:"'I unified three filter implementations into one hook' is a top interview story — own every line.",learn:"[ReactDev] Reusing Logic with Custom Hooks; then read your own hook",dsa:"Permutation in String (sliding window)",eng:"Walk through your useQuestionFilter aloud, as to an interviewer",gh:"notes/react-custom-hooks.md + dsa/sliding-window/permutation-in-string.js"},
+  {n:25,title:"Memoization & the React Compiler",why:"Know when memo helps, and what babel-plugin-react-compiler now does for you.",learn:"[ReactDev] useMemo, useCallback, React.memo",dsa:"Valid Parentheses (stack) — new pattern",eng:"Shadow 10 min",gh:"notes/react-memo.md + dsa/stack/valid-parentheses.js"},
+  {n:26,title:"Context & lifting state",why:"Know when context is right vs prop drilling vs a store.",learn:"[ReactDev] Managing State, Passing Data Deeply with Context",dsa:"Min Stack (stack design)",eng:"Explain prop drilling and when context fixes it, aloud",gh:"notes/react-context.md + dsa/stack/min-stack.js"},
+  {n:27,light:1,title:"Refs, cleanup + review",why:"Refs come up in timers / exam-countdown logic like yours.",learn:"[ReactDev] Referencing Values with Refs, Manipulating the DOM with Refs",dsa:"Review week 4",eng:"Re-record the useQuestionFilter walkthrough; smoother than Day 24",gh:"notes/react-refs.md + notes/week-04-review.md"},
+  {rest:"Day 28 — rest"}
+ ]},
+ {name:"Next.js I (App Router + RSC)",wk:"Week 5",why:"The framework AtomicTest runs on; the server/client boundary and replaceState decision are prime material.",days:[
+  {n:29,title:"App Router structure & file conventions",why:"Explain why you grouped routes as app/(auth), (dashboard), (admin).",learn:"[NextLearn] ch.1–4",dsa:"Evaluate Reverse Polish Notation (stack)",eng:"Shadow 10 min",gh:"notes/next-app-router.md + dsa/stack/rpn.js"},
+  {n:30,title:"Server vs Client Components (the boundary)",why:"The single most important Next concept; know what 'use client' actually costs.",learn:"[NextDocs] Server and Client Components · [NextLearn] rendering",dsa:"Generate Parentheses (backtracking/stack)",eng:"Explain server vs client components aloud, recorded",gh:"notes/next-rsc.md + dsa/stack/generate-parentheses.js"},
+  {n:31,title:"Data fetching & caching in RSC",why:"Connects to your getLandingStats() N+1 — understand fetch caching before you fix it.",learn:"[NextDocs] Data Fetching, Caching",dsa:"Daily Temperatures (monotonic stack)",eng:"Shadow 10 min",gh:"notes/next-data-fetching.md + dsa/stack/daily-temperatures.js"},
+  {n:32,title:"Route handlers (your API routes)",why:"You have 30+ routes; explain request → validation → DB → response for one.",learn:"[NextDocs] Route Handlers; open 3 of your app/api/* routes",dsa:"Binary Search (binary search) — new pattern",eng:"Walk through one API route aloud",gh:"notes/next-route-handlers.md + dsa/binary-search/binary-search.js"},
+  {n:33,title:"Server Actions & the replaceState decision",why:"'Why replaceState instead of the router?' — avoid an RSC round-trip per keystroke, shareable & refresh-safe links.",learn:"[NextDocs] Server Actions; re-read your URL-serialised filter code",dsa:"Search a 2D Matrix (binary search)",eng:"Explain the replaceState trade-off aloud, recorded — interview gold",gh:"notes/next-replacestate-decision.md + dsa/binary-search/search-2d-matrix.js"},
+  {n:34,light:1,title:"Layouts, loading & error UI + review",why:"Error boundaries are on your roadmap; know the Next primitives.",learn:"[NextDocs] Pages and Layouts, Loading UI, Error Handling",dsa:"Review week 5",eng:"Re-record 'server vs client components'",gh:"notes/next-layouts.md + notes/week-05-review.md"},
+  {rest:"Day 35 — rest"}
+ ]},
+ {name:"Next.js II + write ARCHITECTURE.md",wk:"Week 6",why:"Convert six weeks of understanding into a written architecture doc — the artifact that makes interviews easy.",days:[
+  {n:36,title:"Rendering strategies (SSR/SSG/ISR/streaming)",why:"Know which strategy each AtomicTest page uses and why.",learn:"[NextDocs] rendering section",dsa:"Koko Eating Bananas (binary search on answer)",eng:"Shadow 10 min",gh:"notes/next-rendering-strategies.md + dsa/binary-search/koko-bananas.js"},
+  {n:37,title:"Middleware & the auth flow (Better Auth)",why:"'How does your auth work?' must be answerable end to end.",learn:"[NextDocs] Middleware; trace OAuth + single-device session enforcement",dsa:"Find Minimum in Rotated Sorted Array (binary search)",eng:"Explain single-device session enforcement and why an exam app needs it",gh:"notes/next-auth-flow.md + dsa/binary-search/find-min-rotated.js"},
+  {n:38,title:"Deployment model (Vercel + Render sidecar)",why:"Understand why the LaTeX compiler is a separate service (CPU-bound, different scaling, isolation).",learn:"Review your Dockerfile, fly.toml / Render setup for tikz-service",dsa:"Search in Rotated Sorted Array (binary search)",eng:"Explain why I split the TikZ compiler into its own service, recorded",gh:"notes/architecture-deployment.md + dsa/binary-search/search-rotated.js"},
+  {n:39,title:"Write ARCHITECTURE.md: the TikZ microservice",why:"Your strongest 'hard technical problem' story; writing it cements it.",learn:"Write the TikZ section: request flow, the queue, backpressure, 503 overflow, figure caching",dsa:"Reverse Linked List (linked list) — new pattern",eng:"Read your TikZ write-up aloud; tighten any stumbles",gh:"atomic-test: docs/ARCHITECTURE.md (TikZ section)"},
+  {n:40,title:"Write ARCHITECTURE.md: auth, filters, AI pipeline",why:"Four sections = four ready interview answers.",learn:"Write 3 more sections — auth model, URL-state filters, AI vision pipeline (with schema validation)",dsa:"Merge Two Sorted Lists (linked list)",eng:"Explain the AI pipeline's validation layer aloud",gh:"atomic-test: docs/ARCHITECTURE.md (3 more sections)"},
+  {n:41,light:1,title:"Whiteboard rehearsal + Phase 1 review",why:"This is the Phase 1 milestone test.",learn:"On paper, draw AtomicTest's whole architecture from memory; answer aloud: queue cap? auth? filters? AI?",dsa:"Review all binary-search + linked-list problems",eng:"RE-RECORD your 3-min AtomicTest explainer; compare to your Day-2 baseline",gh:"notes/phase-1-retro.md (what you can now explain that you couldn't on Day 1)"},
+  {rest:"Day 42 — rest · 🏁 Milestone: you can defend your architecture cold"}
+ ]}
+]},
+
+{p:"Phase 2 · Weeks 7–14 — DSA Core",goal:"Solve a fresh medium in ~30 min and explain it aloud. Method: attempt 25–30 min → if stuck watch [NCyt] → re-implement from memory next day. Narrate every solution aloud in English.",weeks:[
+ {name:"Linked Lists + Two Pointers consolidation",wk:"Week 7",why:"Fast/slow pointers and list manipulation are common and underpractised.",days:[
+  {n:43,title:"List patterns",learn:"linked-list patterns on [NeetCode]",dsa:"Reorder List · Remove Nth Node From End",eng:"Narrate both",gh:"dsa/linked-list/ ×2"},
+  {n:44,title:"Hash-map list tricks",dsa:"Copy List With Random Pointer · Add Two Numbers",eng:"Explain the old→new node map trick aloud",gh:"dsa/linked-list/ ×2"},
+  {n:45,title:"Floyd's cycle detection",why:"Classic 'aha' interview pattern.",dsa:"Linked List Cycle · Find the Duplicate Number",eng:"Explain tortoise/hare aloud",gh:"dsa/linked-list/ ×2 + notes/dsa-fast-slow-pointers.md"},
+  {n:46,title:"LRU Cache (design)",why:"Relate to your figure-cache idea.",dsa:"LRU Cache",eng:"Explain the LRU design aloud",gh:"dsa/linked-list/lru-cache.js"},
+  {n:47,title:"Hard lists",dsa:"Merge K Sorted Lists · Reverse Nodes in k-Group (attempt, then study)",eng:"Narrate",gh:"dsa/linked-list/ ×2"},
+  {n:48,light:1,title:"Review",dsa:"Review all linked-list problems from memory",eng:"Re-narrate LRU Cache",gh:"notes/week-07-review.md"},
+  {rest:"Day 49 — rest"}
+ ]},
+ {name:"Trees I",wk:"Week 8",why:"Recursion on trees is foundational for graphs and DP later.",days:[
+  {n:50,title:"Traversal (DFS/BFS)",learn:"tree traversal on [NeetCode]",dsa:"Invert Binary Tree · Max Depth",eng:"Explain base/recursive case aloud",gh:"dsa/trees/ ×2 + notes/dsa-tree-traversal.md"},
+  {n:51,title:"Tree properties",dsa:"Diameter of Binary Tree · Balanced Binary Tree",eng:"Narrate",gh:"dsa/trees/ ×2"},
+  {n:52,title:"Tree comparison",dsa:"Same Tree · Subtree of Another Tree",eng:"Narrate",gh:"dsa/trees/ ×2"},
+  {n:53,title:"BST + level order (BFS)",dsa:"Lowest Common Ancestor of a BST · Binary Tree Level Order Traversal",eng:"Explain BFS-with-a-queue aloud",gh:"dsa/trees/ ×2"},
+  {n:54,title:"More traversals",dsa:"Right Side View · Count Good Nodes",eng:"Narrate",gh:"dsa/trees/ ×2"},
+  {n:55,light:1,title:"Review",dsa:"Review trees from memory",eng:"Re-narrate level-order",gh:"notes/week-08-review.md"},
+  {rest:"Day 56 — rest"}
+ ]},
+ {name:"Trees II + Tries",wk:"Week 9",why:"Tries power autocomplete — directly relevant to a problem-search feature.",days:[
+  {n:57,title:"BST validation",dsa:"Validate BST · Kth Smallest in BST (in-order)",eng:"Explain why in-order on a BST is sorted",gh:"dsa/trees/ ×2"},
+  {n:58,title:"Tree construction (hard)",dsa:"Construct Tree from Preorder & Inorder",eng:"Narrate slowly",gh:"dsa/trees/ ×1 + notes/dsa-tree-construct.md"},
+  {n:59,title:"Hard tree problems",dsa:"Binary Tree Max Path Sum · Serialize & Deserialize Binary Tree",eng:"Narrate",gh:"dsa/trees/ ×2"},
+  {n:60,title:"Tries",learn:"tries on [NeetCode]",dsa:"Implement Trie",eng:"Explain what a trie is and where you'd use one (autocomplete)",gh:"dsa/tries/implement-trie.js + notes/dsa-tries.md"},
+  {n:61,title:"Trie + backtracking (hard)",dsa:"Design Add & Search Words · Word Search II",eng:"Narrate",gh:"dsa/tries/ ×2"},
+  {n:62,light:1,title:"Review",dsa:"Review trees + tries",eng:"Re-narrate Implement Trie",gh:"notes/week-09-review.md"},
+  {rest:"Day 63 — rest"}
+ ]},
+ {name:"Heaps / Priority Queues + a project breather",wk:"Week 10",why:"Heaps are common and underpractised; one small AtomicTest task keeps code warm.",days:[
+  {n:64,title:"Heaps intro",learn:"heaps on [NeetCode]",dsa:"Kth Largest in a Stream · Last Stone Weight",eng:"Explain a min-heap aloud",gh:"dsa/heap/ ×2 + notes/dsa-heaps.md"},
+  {n:65,title:"Heap selection",dsa:"K Closest Points to Origin · Kth Largest in an Array (quickselect)",eng:"Narrate",gh:"dsa/heap/ ×2"},
+  {n:66,title:"Heap design",dsa:"Task Scheduler · Design Twitter",eng:"Explain Design Twitter's feed-merge aloud",gh:"dsa/heap/ ×2"},
+  {n:67,title:"Two heaps (hard)",dsa:"Find Median from Data Stream",eng:"Narrate the two-heap balance",gh:"dsa/heap/ ×1"},
+  {n:68,title:"PROJECT: fix the N+1 query",why:"Real perf story for interviews.",learn:"AtomicTest: batch getLandingStats() to remove the N+1",dsa:"—",eng:"Explain what an N+1 query is and how I fixed mine, recorded",gh:"atomic-test: 'perf: batch getLandingStats to remove N+1'"},
+  {n:69,light:1,title:"Review · 🏁 ~50 problems",dsa:"Review heaps",eng:"Narrate one heap solution",gh:"notes/week-10-review.md"},
+  {rest:"Day 70 — rest"}
+ ]},
+ {name:"Backtracking",wk:"Week 11",why:"One template (choose/explore/un-choose) unlocks a whole category.",days:[
+  {n:71,title:"Backtracking template",learn:"backtracking on [NeetCode]",dsa:"Subsets · Combination Sum",eng:"Explain the choose/explore/un-choose template aloud",gh:"dsa/backtracking/ ×2 + notes/dsa-backtracking.md"},
+  {n:72,title:"Permutations + dupes",dsa:"Permutations · Subsets II",eng:"Explain handling duplicates",gh:"dsa/backtracking/ ×2"},
+  {n:73,title:"Grid backtracking",dsa:"Combination Sum II · Word Search",eng:"Narrate",gh:"dsa/backtracking/ ×2"},
+  {n:74,title:"Partition + combinations",dsa:"Palindrome Partitioning · Letter Combinations of a Phone Number",eng:"Narrate",gh:"dsa/backtracking/ ×2"},
+  {n:75,title:"N-Queens (hard)",dsa:"N-Queens",eng:"Explain the constraint-tracking aloud",gh:"dsa/backtracking/ ×1"},
+  {n:76,light:1,title:"Review",dsa:"Review backtracking from memory",eng:"Re-narrate Subsets",gh:"notes/week-11-review.md"},
+  {rest:"Day 77 — rest"}
+ ]},
+ {name:"Graphs",wk:"Week 12",why:"Highest-leverage topic after arrays; your maths brain will like these.",days:[
+  {n:78,title:"Grid DFS/BFS",learn:"graph DFS/BFS, grids on [NeetCode]",dsa:"Number of Islands · Max Area of Island",eng:"Explain grid-DFS aloud",gh:"dsa/graphs/ ×2 + notes/dsa-graphs.md"},
+  {n:79,title:"Graph traversal",dsa:"Clone Graph · Pacific Atlantic Water Flow",eng:"Narrate",gh:"dsa/graphs/ ×2"},
+  {n:80,title:"Multi-source BFS",dsa:"Surrounded Regions · Rotting Oranges",eng:"Explain multi-source BFS aloud",gh:"dsa/graphs/ ×2"},
+  {n:81,title:"Topological sort",why:"Very common; cycle detection too.",dsa:"Course Schedule · Course Schedule II",eng:"Explain topo sort aloud",gh:"dsa/graphs/ ×2 + notes/dsa-topo-sort.md"},
+  {n:82,title:"Union-Find",dsa:"Number of Connected Components · Redundant Connection",eng:"Explain union-find aloud",gh:"dsa/graphs/ ×2 + notes/dsa-union-find.md"},
+  {n:83,light:1,title:"Review",dsa:"Review graphs",eng:"Re-narrate Course Schedule",gh:"notes/week-12-review.md"},
+  {rest:"Day 84 — rest"}
+ ]},
+ {name:"Dynamic Programming I (1-D)",wk:"Week 13",why:"DP scares people; broken into patterns it's learnable — and your maths is an edge. Go slow, understand the recurrence.",days:[
+  {n:85,title:"DP intro (memo vs tabulation)",learn:"DP intro on [NeetCode]",dsa:"Climbing Stairs · Min Cost Climbing Stairs",eng:"Explain 'what a recurrence relation is' aloud",gh:"dsa/dp/ ×2 + notes/dsa-dp-intro.md"},
+  {n:86,title:"House Robber family",dsa:"House Robber · House Robber II",eng:"Explain the state transition aloud",gh:"dsa/dp/ ×2"},
+  {n:87,title:"Palindrome DP",dsa:"Longest Palindromic Substring · Palindromic Substrings",eng:"Narrate",gh:"dsa/dp/ ×2"},
+  {n:88,title:"Decode + coins",dsa:"Decode Ways · Coin Change",eng:"Explain Coin Change's bottom-up table aloud",gh:"dsa/dp/ ×2"},
+  {n:89,title:"Subarray DP",dsa:"Maximum Product Subarray · Word Break",eng:"Narrate",gh:"dsa/dp/ ×2"},
+  {n:90,light:1,title:"Review · 🏁 ~100 problems",dsa:"Longest Increasing Subsequence · review week",eng:"Re-narrate Coin Change",gh:"notes/week-13-review.md"},
+  {rest:"Day 91 — rest"}
+ ]},
+ {name:"DP II (2-D) + Greedy + Intervals",wk:"Week 14",why:"Finish the core patterns; intervals map to your exam time-slot logic.",days:[
+  {n:92,title:"2-D DP",dsa:"Unique Paths · Longest Common Subsequence",eng:"Explain a 2-D DP grid aloud",gh:"dsa/dp/ ×2"},
+  {n:93,title:"Knapsack-style",dsa:"Coin Change II · Target Sum",eng:"Narrate",gh:"dsa/dp/ ×2"},
+  {n:94,title:"Edit distance",dsa:"Edit Distance · Best Time Buy/Sell with Cooldown",eng:"Explain Edit Distance's recurrence aloud",gh:"dsa/dp/ ×2"},
+  {n:95,title:"Greedy",learn:"greedy on [NeetCode]",dsa:"Maximum Subarray (Kadane) · Jump Game",eng:"Explain Kadane's aloud",gh:"dsa/greedy/ ×2 + notes/dsa-greedy.md"},
+  {n:96,title:"Intervals",dsa:"Insert Interval · Merge Intervals · Non-overlapping Intervals",eng:"Explain the sort-by-start interval pattern aloud",gh:"dsa/intervals/ ×3 + notes/dsa-intervals.md"},
+  {n:97,light:1,title:"🏁 Phase 2 milestone test",why:"The real test of readiness.",learn:"Pick one UNSEEN medium at random on [Grind75]",dsa:"Solve it in 30 min while narrating aloud in English",eng:"That narration IS the test",gh:"notes/phase-2-retro.md + the solution"},
+  {rest:"Day 98 — rest · 🏁 Fresh medium in ~30 min, explained aloud"}
+ ]}
+]},
+
+{p:"Phase 3+4 · Weeks 15–20 — System Design, Hardening, Portfolio & English",goal:"Learn system design by mapping it onto what you already built (one concept + one practice prompt per week), ship one feature solo, get recruiter-ready, and get fluent in spoken English. DSA drops to ~1–2 review problems/week. SD notes go in system-design/concepts/ and system-design/practice/.",weeks:[
+ {name:"System design: fundamentals + fix AtomicTest bugs",wk:"Week 15",why:"Learn the words for what you built — scale, networking, APIs — and clear the bugs you've been carrying.",days:[
+  {n:99,title:"SD: scale fundamentals + networking",why:"Every design starts with scale and how requests are delivered.",learn:"[Hello] Core Concepts (latency vs throughput, vertical vs horizontal, LB, CDN, DNS); estimate AtomicTest's load",dsa:"DSA maintenance: 1 review medium",eng:"Explain horizontal vs vertical scaling aloud",gh:"system-design/concepts/01-fundamentals.md"},
+  {n:100,title:"SD: APIs + the 7-step interview framework",why:"The framework is the spine of every SD round; the request-flow diagram is your anchor.",learn:"[Hello] APIs (REST/RPC/GraphQL, idempotency); learn the 7 steps; draw AtomicTest's request flow",dsa:"—",eng:"Walk AtomicTest's request flow aloud",gh:"system-design/atomictest-map.md"},
+  {n:101,title:"Project: fix the handleSubmit hoisting bug",dsa:"Fix it yourself; understand the TDZ cause",eng:"Explain the TDZ fix aloud",gh:"atomic-test 'fix: handleSubmit hoisting (TDZ)'"},
+  {n:102,title:"Project: fix dead filter state + Promise.all fetch",dsa:"Fix the dead dashboard filter state + the taxonomy Promise.all",eng:"Explain both fixes",gh:"atomic-test commits ×2"},
+  {n:103,title:"Project: fix the getLandingStats N+1",dsa:"Batch the query to remove the N+1",eng:"Explain what an N+1 is and how you fixed yours",gh:"atomic-test 'perf: batch getLandingStats'"},
+  {n:104,light:1,title:"Review",dsa:"2 review mediums",eng:"Re-explain AtomicTest using this week's vocabulary",gh:"reviews/week-15.md"},
+  {rest:"Day 105 — rest"}
+ ]},
+ {name:"System design: databases + ship the AI hint feature (solo)",wk:"Week 16",why:"Databases are the #1 interview area; shipping one feature solo is your proof of independent capability.",days:[
+  {n:106,title:"SD: databases",why:"'Which database and why' comes up in almost every interview.",learn:"[Hello] Databases (SQL vs NoSQL, indexing, ACID, replication, sharding); DDIA ch.2–3",dsa:"DSA maintenance: 1 review medium",eng:"Explain a DB index + when you'd shard, aloud",gh:"system-design/concepts/02-databases.md"},
+  {n:107,title:"SD practice: design a URL shortener",why:"Your first full prompt — hashing, read-heavy caching, DB choice.",learn:"Run the 7-step framework aloud, ~35 min",dsa:"—",eng:"Full walkthrough aloud",gh:"system-design/practice/url-shortener.md"},
+  {n:108,title:"Project: build the hint API",dsa:"Hint API route: input → Anthropic SDK → structured, schema-validated hint",eng:"Explain your prompt design aloud",gh:"atomic-test 'feat: hint API'"},
+  {n:109,title:"Project: hint UI + guards",dsa:"Build the UI (button, loading, reveal) + validation + anti-spam guard",eng:"Narrate the client/server split",gh:"atomic-test 'feat: hint UI + guards'"},
+  {n:110,title:"Project: ship + case-study draft",dsa:"Test, polish, deploy; draft 'Building an AI hint system'",eng:"Record a 2-min demo in English",gh:"atomic-test deploy + notes/casestudy-hints-draft.md"},
+  {n:111,light:1,title:"Review · 🏁 Hint shipped solo",dsa:"Re-do the URL-shortener design aloud, timed",eng:"Narrate it",gh:"reviews/week-16.md"},
+  {rest:"Day 112 — rest"}
+ ]},
+ {name:"System design: caching + queues & backpressure (your home turf) + case studies",wk:"Week 17",why:"This is the week your real TikZ work becomes your strongest interview story.",days:[
+  {n:113,title:"SD: caching + async queues + backpressure",why:"Maps directly onto your TikZ queue and figure cache — your home turf.",learn:"[BBG] queues; [Hello] Caching (cache-aside vs write-through, LRU, invalidation, backpressure)",dsa:"DSA maintenance: 1 review medium",eng:"Explain cache invalidation + backpressure aloud",gh:"system-design/concepts/03-caching-queues.md"},
+  {n:114,title:"SD practice: design a rate limiter",why:"Token bucket + distributed counters — close to what you've built.",learn:"Run the 7 steps aloud, ~35 min",dsa:"—",eng:"Full walkthrough aloud",gh:"system-design/practice/rate-limiter.md"},
+  {n:115,title:"SD: your AtomicTest render-service deep-dive",why:"Your single strongest interview answer — rehearse it now.",learn:"Write the request flow, queue cap, 503 overflow, cache, and 10× plan",dsa:"—",eng:"Rehearse the deep-dive aloud",gh:"system-design/practice/design-atomictest-render.md"},
+  {n:116,title:"Publish case study #1",dsa:"'Why I built a LaTeX microservice instead of pre-rendering'",eng:"Read aloud, polish",gh:"publish + link in road-to-remote README"},
+  {n:117,title:"Publish case study #2",dsa:"'Capping concurrency in a CPU-bound queue'",eng:"Read aloud, polish",gh:"publish + link"},
+  {n:118,light:1,title:"Review · 🏁 2 case studies live",dsa:"Re-do the rate-limiter design aloud, timed",eng:"Narrate it",gh:"reviews/week-17.md"},
+  {rest:"Day 119 — rest"}
+ ]},
+ {name:"System design: reliability & consistency + portfolio",wk:"Week 18",why:"'What happens when X fails?' is half of every interview; and your portfolio goes live.",days:[
+  {n:120,title:"SD: reliability, consistency (CAP), observability",why:"Failure modes and trade-offs separate strong candidates.",learn:"[Hello] reliability + CAP; DDIA consistency (skim): retries, timeouts, idempotency, circuit breakers, monitoring",dsa:"DSA maintenance: 1 review medium",eng:"Explain CAP + idempotency aloud",gh:"system-design/concepts/04-reliability.md"},
+  {n:121,title:"SD practice: design a news feed",why:"Fan-out, caching, ranking — a classic.",learn:"Run the 7 steps aloud, ~35 min",dsa:"—",eng:"Full walkthrough aloud",gh:"system-design/practice/news-feed.md"},
+  {n:122,title:"Project: build portfolio (Next.js)",dsa:"One page: hero, AtomicTest showcase, links; case section from ARCHITECTURE.md",eng:"Shadow 10 min",gh:"new portfolio repo, initial commit"},
+  {n:123,title:"Project: diagram + deploy + profile README",dsa:"Excalidraw architecture diagram; deploy portfolio (Vercel); profile README pinning AtomicTest + portfolio",eng:"Record a 90-sec portfolio tour",gh:"portfolio deploy + profile README + diagram"},
+  {n:124,title:"Project: polish AtomicTest README",dsa:"Add the diagram + screenshots to your (already strong) README",eng:"Narrate the diagram aloud",gh:"atomic-test README commit"},
+  {n:125,light:1,title:"Review · 🏁 Portfolio live",dsa:"DSA maintenance",eng:"Re-record the portfolio tour",gh:"reviews/week-18.md"},
+  {rest:"Day 126 — rest"}
+ ]},
+ {name:"System design: architecture & security + CV, LinkedIn, first mocks",wk:"Week 19",why:"Service boundaries + auth are decisions you actually made; and your application assets go live.",days:[
+  {n:127,title:"SD: service architecture + storage + security",why:"Monolith-vs-microservices and auth are decisions you made in AtomicTest.",learn:"[Hello] + Xu Vol 1: boundaries, API gateways, blob storage, authn vs authz, sessions, OAuth — map to your app↔sidecar split + single-device sessions",dsa:"DSA maintenance: 1 review medium",eng:"Explain why you split the render service + single-device sessions aloud",gh:"system-design/concepts/05-architecture-security.md"},
+  {n:128,title:"SD practice: design a file-storage service",why:"Dropbox-lite: blob storage, metadata, chunking.",learn:"Run the 7 steps aloud, ~35 min",dsa:"—",eng:"Full walkthrough aloud",gh:"system-design/practice/file-storage.md"},
+  {n:129,title:"Project: draft + score CV",learn:"draft in [Overleaf]; score on [RW]",dsa:"Quantify every defensible bullet",eng:"Read your CV summary aloud",gh:"job-search/cv/cv.md"},
+  {n:130,title:"Project: build LinkedIn",dsa:"Headline, About (tutor→builder), Open-to-Work (remote), pin case studies",eng:"Shadow",gh:"LOG: LinkedIn live"},
+  {n:131,title:"First mock + 4 STAR stories",learn:"mock on [Pramp]",dsa:"4 STAR stories: queue under pressure · N+1 fix · hint shipped solo · why you started AtomicTest",eng:"Debrief the mock; tell each STAR aloud",gh:"job-search/mocks/mock-01.md + job-search/star-stories.md"},
+  {n:132,light:1,title:"Review",dsa:"DSA maintenance",eng:"Re-tell your 2 best STAR stories",gh:"reviews/week-19.md"},
+  {rest:"Day 133 — rest"}
+ ]},
+ {name:"System design: AI/LLM systems + full interview rehearsal",wk:"Week 20",why:"Designing AI systems is the fastest-growing SD subtopic and bridges to your AI track; then you rehearse the whole thing.",days:[
+  {n:134,title:"SD: designing AI/LLM systems",why:"The modern layer — and where the demand is.",learn:"Chip Huyen 'AI Engineering' (relevant chapters) + Anthropic agents/RAG docs: RAG, vector search, model serving, cost/latency, evals, guardrails",dsa:"DSA maintenance: 1 review medium",eng:"Explain a RAG pipeline aloud",gh:"system-design/concepts/06-ai-systems.md"},
+  {n:135,title:"SD practice: design a RAG hint system",why:"Bridges system design and your AI track, over your own problem bank.",learn:"Vector store, retrieval, LLM call, eval, cost — run the 7 steps aloud",dsa:"—",eng:"Full walkthrough aloud",gh:"system-design/practice/rag-hint-system.md"},
+  {n:136,title:"SD practice: 'Design AtomicTest' (the big one)",why:"Your own system, end to end — the best prep you can do.",learn:"Timed 45 min, recorded, full 7-step framework, ending on trade-offs",dsa:"—",eng:"Milestone rehearsal aloud",gh:"system-design/practice/design-atomictest.md"},
+  {n:137,title:"System-design mock (live)",learn:"[Exponent] or [intio]",dsa:"A live system-design mock; focus on speaking clarity",eng:"Debrief",gh:"job-search/mocks/mock-02.md"},
+  {n:138,title:"Behavioral + pitch",dsa:"4 more STAR stories (debugging · stuck-and-learned · teamwork-from-tutoring · changed-my-mind) + 'tell me about yourself' + own the 'did you use AI?' answer",eng:"Record until smooth",gh:"job-search/star-stories.md + notes/pitch-and-ai-answer.md"},
+  {n:139,light:1,title:"🏁 Phase 3/4 milestone",dsa:"Run a full 45-min system-design round in English (a classic prompt + AtomicTest), ending on trade-offs",eng:"This is the milestone",gh:"reviews/phase-34-retro.md"},
+  {rest:"Day 140 — rest · 🏁 You can run a system-design round in English"}
+ ]}
+]},
+
+{p:"Phase 5 · Weeks 21–26 — The Job-Search Machine",goal:"Convert prep into interviews into an offer. Treat it as a funnel; track every application. Keep ~3 DSA review problems/week and ~2 mocks/week. Aim for ~10–15 quality applications/week.",weeks:[
+ {name:"Profiles live + first applications",wk:"Week 21",why:"Marketplace vetting takes time — start it now; apply in parallel.",days:[
+  {n:141,title:"Turing + Arc profiles",learn:"start vetting on [Turing] + [Arc]",dsa:"Profiles live",eng:"Shadow",gh:"LOG (profiles live) + a daily commit"},
+  {n:142,title:"Wellfound + Lemon profiles",learn:"[Wellfound] + [Lemon]; set filters (remote, your timezone overlap)",dsa:"Profiles live",eng:"Shadow",gh:"LOG + commit"},
+  {n:143,title:"Apply ×5",dsa:"Tailor CV summary keywords to each; track in tracker + sheet",eng:"Practise a recruiter-screen answer aloud",gh:"notes/applications-log.md"},
+  {n:144,title:"Mock #4 + apply ×3",learn:"[Pramp]",dsa:"Mock + 3 applications",eng:"Debrief",gh:"notes/mock-04-debrief.md"},
+  {n:145,title:"YC startups ×3",learn:"[YC] Work at a Startup",dsa:"Apply to 3 remote-friendly startups with a personal note",eng:"Shadow",gh:"applications-log update"},
+  {n:146,light:1,title:"Review",dsa:"2 review mediums",eng:"Re-do 'tell me about yourself'",gh:"notes/week-21-review.md"},
+  {rest:"Day 147 — rest"}
+ ]},
+ {name:"Volume + warm outreach",wk:"Week 22",why:"Top-of-funnel volume + visibility create luck.",days:[
+  {n:148,title:"Apply ×5 + post case study #1",dsa:"Post case study #1 on LinkedIn",eng:"Shadow",gh:"LOG + commit"},
+  {n:149,title:"Outreach ×5",dsa:"DM 5 recruiters/engineers (one-line pitch + portfolio link)",eng:"Practise your pitch aloud",gh:"notes/outreach-log.md"},
+  {n:150,title:"Mock #5 (system design) + apply ×3",learn:"[Exponent]",dsa:"Mock + 3 applications",eng:"Debrief",gh:"mock debrief"},
+  {n:151,title:"Apply ×5",dsa:"Respond to recruiter replies same day",eng:"Recruiter-screen rehearsal",gh:"applications-log"},
+  {n:152,title:"Engage + post case study #2",dsa:"Comment on 5 posts by engineers at target companies; post case study #2",eng:"Shadow",gh:"LOG + commit"},
+  {n:153,light:1,title:"Review",dsa:"DSA review",eng:"Re-record your strongest STAR story",gh:"notes/week-22-review.md"},
+  {rest:"Day 154 — rest"}
+ ]},
+ {name:"Screens & first technicals",wk:"Week 23",why:"Now you handle live processes while refilling the funnel.",days:[
+  {n:"155–159",title:"Live screens + targeted prep (5 days)",why:"Per interview: company research + their stack + the matching STAR story.",dsa:"Handle screens/take-homes; keep applying ≥3/day; Mock #6 mid-week",eng:"Warm up your voice in English before every real call",gh:"daily: prep notes + a DSA problem + LOG"},
+  {n:160,light:1,title:"Review",dsa:"Which stage are candidates dropping at? Adjust",eng:"Reflect aloud",gh:"notes/week-23-review.md"},
+  {rest:"+ rest day"}
+ ]},
+ {name:"Technicals & system-design rounds",wk:"Week 24",why:"Perform under pressure; prep negotiation in parallel.",days:[
+  {n:"161–165",title:"Technical + system-design rounds (5 days)",dsa:"Before each round, re-skim the matching system-design/ note + rehearse aloud 10 min; keep funnel ≥3/day; Mock #7",eng:"Speak English aloud daily, even narrating prep",gh:"daily: prep note or DSA + LOG"},
+  {n:166,light:1,title:"Review",dsa:"Research ranges (levels.fyi, marketplace rates); draft 'can I have a day?' + counter email",eng:"Rehearse the counter aloud",gh:"notes/week-24-review.md"},
+  {rest:"+ rest day"}
+ ]},
+ {name:"Finals, offers, negotiation",wk:"Week 25",why:"Never accept on the spot; always counter once.",days:[
+  {n:"167–171",title:"Final rounds + negotiation (5 days)",why:"Keep other processes warm as leverage.",dsa:"Final rounds; 'thank you, can I have a day?'; counter politely; weigh marketplace vs direct offers",eng:"Stay sharp",gh:"daily commit + LOG"},
+  {n:172,light:1,title:"Review",dsa:"Decision matrix: pay, timezone, growth, stability",eng:"Talk through the trade-offs aloud",gh:"notes/week-25-review.md"},
+  {rest:"+ rest day"}
+ ]},
+ {name:"Close, or extend with strength",wk:"Week 26",why:"Close the best fit — or keep going from a position of strength.",days:[
+  {n:"173–177",title:"Close or extend (5 days)",why:"If no offer yet, do NOT stop — your pipeline + skills now compound.",dsa:"Close & accept the best fit; OR keep applying, book 2 mocks, write 'what 6 months of daily practice built'",eng:"Keep speaking English daily",gh:"daily commit + LOG"},
+  {n:178,title:"🏁 Final retro",dsa:"Write 26-week-retro.md: every milestone, every metric, what you'd tell Day-1 you",eng:"Record a closing reflection in English",gh:"notes/26-week-retro.md"},
+  {rest:"🏁 Offer in hand — or a strong live pipeline + a portfolio that proves you're an engineer"}
+ ]}
+]}
+];
+
+/* ---------- storage ---------- */
+const KEY="atomictest_curriculum_v1";
+const store={
+  async get(k){try{if(window.storage&&window.storage.get){const r=await window.storage.get(k);return r?r.value:null;}}catch(e){}try{return localStorage.getItem(k);}catch(e){return null;}},
+  async set(k,v){try{if(window.storage&&window.storage.set){await window.storage.set(k,v,false);return;}}catch(e){}try{localStorage.setItem(k,v);}catch(e){}}
+};
+let state={done:{},start:""};
+let saveTimer=null;
+function save(){clearTimeout(saveTimer);document.getElementById('save').textContent='Saving…';saveTimer=setTimeout(async()=>{await store.set(KEY,JSON.stringify(state));document.getElementById('save').innerHTML='Saved <b>✓</b> · auto-saves as you go';},300);}
+
+/* total day count (count numeric + range cards as 1 unit each for progress simplicity) */
+let DAYUNITS=[];
+DATA.forEach(ph=>ph.weeks.forEach(w=>w.days.forEach(d=>{if(!d.rest)DAYUNITS.push(String(d.n));})));
+const TOTAL=178;
+
+function render(){
+  const root=document.getElementById('content');root.innerHTML='';
+  let doneCount=0;
+  // phase nav
+  const nav=document.getElementById('phasenav');nav.innerHTML='';
+  DATA.forEach((ph,pi)=>{const c=document.createElement('div');c.className='chip';c.textContent='Phase '+(ph.p.match(/Phase \d\+?\d?/)||['?'])[0].replace('Phase ','P');c.onclick=()=>document.getElementById('ph'+pi).scrollIntoView({behavior:'smooth'});nav.appendChild(c);});
+
+  DATA.forEach((ph,pi)=>{
+    const sec=document.createElement('div');sec.className='phase';sec.id='ph'+pi;
+    const head=ph.p.split(' — ');
+    sec.innerHTML=`<div class="phase-title"><span class="pn">${head[0]}</span></div><div class="phase-title" style="font-size:18px">${head[1]||''}</div><div class="phase-goal">${lk(ph.goal)}</div>`;
+    ph.weeks.forEach((w,wi)=>{
+      let wDone=0,wTotal=0;
+      w.days.forEach(d=>{if(!d.rest){wTotal++;if(state.done[String(d.n)])wDone++;}});
+      doneCount+=wDone;
+      const pct=wTotal?Math.round(wDone/wTotal*100):0;
+      const wEl=document.createElement('div');wEl.className='week'+((pi===0&&wi===0)?' open':'');
+      wEl.innerHTML=`
+        <div class="week-head"><div class="ring ${pct===100?'done':''}" style="--p:${pct}"></div>
+          <div class="week-name"><b>${w.name}</b><span class="wk">${w.wk}</span></div>
+          <div class="week-prog">${wDone}/${wTotal}</div><div class="chev">▶</div></div>
+        <div class="week-body"><div class="week-why">${lk(w.why)}</div>${
+          w.days.map(d=>{
+            if(d.rest)return `<div class="rest">${lk(d.rest)}</div>`;
+            const id=String(d.n),on=!!state.done[id];
+            const facet=(k,v,cls)=>v?`<div class="facet ${cls||''}"><span class="k">${k}</span><span class="v">${lk(v)}</span></div>`:'';
+            return `<div class="day ${on?'done':''} ${d.light?'light':''}" data-day="${id}">
+              <div class="box" data-box="${id}"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div>
+              <div class="body">
+                <div class="dhead"><span class="dnum">Day ${id}</span><span class="dtitle">${lk(d.title)}</span>${d.light?'<span class="tag light">light</span>':''}</div>
+                <div class="facets">
+                  ${facet('Why',d.why,'why')}
+                  ${facet('Learn',d.learn)}
+                  ${facet('DSA',d.dsa)}
+                  ${facet('English',d.eng)}
+                  ${facet('GitHub',d.gh,'gh')}
+                </div>
+              </div></div>`;
+          }).join('')
+        }</div>`;
+      sec.appendChild(wEl);
+    });
+    root.appendChild(sec);
+  });
+
+  document.getElementById('doneN').textContent=doneCount;
+  const opct=Math.round(doneCount/TOTAL*100);
+  document.getElementById('bar').style.width=opct+'%';
+  document.getElementById('pctLab').textContent=opct+'% of '+TOTAL+' days';
+  if(state.start)document.getElementById('start').value=state.start;
+}
+
+/* events */
+document.addEventListener('click',e=>{
+  const head=e.target.closest('.week-head');if(head){head.parentElement.classList.toggle('open');return;}
+  const box=e.target.closest('[data-box]');if(box){const id=box.dataset.box;state.done[id]=!state.done[id];save();render();reopenTo(id);return;}
+});
+function reopenTo(id){ // keep the week of the toggled day open after re-render
+  document.querySelectorAll('.day').forEach(()=>{});
+  const el=document.querySelector('[data-day="'+id+'"]');if(el){el.closest('.week').classList.add('open');}
+}
+document.getElementById('start').addEventListener('change',e=>{state.start=e.target.value;save();});
+document.getElementById('jump').addEventListener('click',()=>{
+  // jump to first unfinished numeric day, or today by date if start set
+  let target=null;
+  if(state.start){const ms=Date.now()-new Date(state.start).getTime();const dayNo=Math.max(1,Math.min(178,Math.floor(ms/86400000)+1));target=String(dayNo);}
+  if(!target){for(const u of DAYUNITS){if(!state.done[u]){target=u;break;}}}
+  if(!target)target=DAYUNITS[DAYUNITS.length-1];
+  // find a card whose data-day starts the matching range
+  let el=document.querySelector('[data-day="'+target+'"]');
+  if(!el){ // ranges like "155–159"
+    document.querySelectorAll('[data-day]').forEach(c=>{const d=c.dataset.day;if(d.includes('–')){const [a,b]=d.split('–').map(Number);if(+target>=a&&+target<=b)el=c;}});
+  }
+  if(el){el.closest('.week').classList.add('open');el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.add('today');setTimeout(()=>el.classList.remove('today'),3000);}
+});
+document.getElementById('reset').addEventListener('click',()=>{if(confirm('Reset all day completion + start date? This cannot be undone.')){state={done:{},start:""};save();render();}});
+
+/* boot */
+(async function(){
+  try{const raw=await store.get(KEY);if(raw){const p=JSON.parse(raw);state={done:p.done||{},start:p.start||""};}}catch(e){}
+  render();
+  document.getElementById('save').innerHTML='Loaded <b>✓</b> · auto-saves as you go';
+})();
+</script>
+<script src="script.js"></script>
+</body>
+</html>
